@@ -6,8 +6,6 @@ import (
 	"github.com/mdlayher/wol"
 	"net"
 	"net/http"
-	"os"
-	"strings"
 )
 
 //go:embed index.html
@@ -21,18 +19,9 @@ func main() {
 		panic(err)
 	}
 
-	var port = "8080"
-	for _, e := range os.Environ() {
-		pair := strings.SplitN(e, "=", 2)
-		if pair[0] == "port" {
-			port = pair[1]
-		}
-	}
-
-	fmt.Printf("Found custom Port: %s\n", port)
-
 	http.HandleFunc("/", func(writer http.ResponseWriter, request *http.Request) {
 		if request.Method == http.MethodPost {
+			fmt.Printf("POST Request for %s\n", request.FormValue("mac"))
 			mac, err := net.ParseMAC(request.FormValue("mac"))
 			if err != nil {
 				fmt.Fprintf(writer, "Error Parsing Mac-Address: %v", err)
@@ -45,13 +34,14 @@ func main() {
 			}
 			fmt.Fprintf(writer, "Succesfully tried to wake %s", mac)
 		} else {
+			fmt.Printf("GET request\n")
 			fmt.Fprintf(writer, index)
 		}
 	})
 
-	fmt.Printf("Starting on 0.0.0.0:%s\n", port)
+	fmt.Printf("Starting on 0.0.0.0:8080\n")
 
-	err = http.ListenAndServe("0.0.0.0:"+port, nil)
+	err = http.ListenAndServe("0.0.0.0:8080", nil)
 	if err != nil {
 		panic(err)
 	}
