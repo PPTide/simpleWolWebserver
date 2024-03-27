@@ -45,6 +45,8 @@ func main() {
 		}
 	})
 
+	fmt.Printf("Starting on 0.0.0.0:%s", port)
+
 	err = http.ListenAndServe("0.0.0.0:"+port, nil)
 	if err != nil {
 		panic(err)
