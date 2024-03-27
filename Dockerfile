@@ -5,6 +5,7 @@ WORKDIR /app
 
 COPY go.mod go.sum ./
 COPY *.go ./
+COPY *.html ./
 
 RUN go mod download
 RUN CGO_ENABLED=0 GOOS=linux go build -o /simple-wol-server
