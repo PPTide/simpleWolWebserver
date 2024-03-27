@@ -6,6 +6,8 @@ import (
 	"github.com/mdlayher/wol"
 	"net"
 	"net/http"
+	"os"
+	"strings"
 )
 
 //go:embed index.html
@@ -15,6 +17,14 @@ func main() {
 	wClient, err := wol.NewClient()
 	if err != nil {
 		panic(err)
+	}
+
+	var port = "8080"
+	for _, e := range os.Environ() {
+		pair := strings.SplitN(e, "=", 2)
+		if pair[0] == "port" {
+			port = pair[1]
+		}
 	}
 
 	http.HandleFunc("/", func(writer http.ResponseWriter, request *http.Request) {
@@ -35,5 +45,8 @@ func main() {
 		}
 	})
 
-	http.ListenAndServe("0.0.0.0:8080", nil)
+	err = http.ListenAndServe("0.0.0.0:"+port, nil)
+	if err != nil {
+		panic(err)
+	}
 }
