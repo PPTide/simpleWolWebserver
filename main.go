@@ -14,6 +14,8 @@ import (
 var index string
 
 func main() {
+	fmt.Println("Starting Server")
+
 	wClient, err := wol.NewClient()
 	if err != nil {
 		panic(err)
@@ -26,6 +28,8 @@ func main() {
 			port = pair[1]
 		}
 	}
+
+	fmt.Printf("Found custom Port: %s\n", port)
 
 	http.HandleFunc("/", func(writer http.ResponseWriter, request *http.Request) {
 		if request.Method == http.MethodPost {
@@ -45,7 +49,7 @@ func main() {
 		}
 	})
 
-	fmt.Printf("Starting on 0.0.0.0:%s", port)
+	fmt.Printf("Starting on 0.0.0.0:%s\n", port)
 
 	err = http.ListenAndServe("0.0.0.0:"+port, nil)
 	if err != nil {
